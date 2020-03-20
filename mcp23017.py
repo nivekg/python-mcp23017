@@ -384,7 +384,7 @@ class MCP23017:
     def __init__(self, bus, address):
         self.bus=bus
         self.address=address
-        self.bank=self.get_bank()
+        self.bank="BANK0"
 
     def _decode(self, key):
         raw_data=self.bus.read_byte_data(self.address, REGISTERS[self.bank][key]["reg"])
@@ -397,7 +397,7 @@ class MCP23017:
     def _encode(self, key, val, reg_key):
         raw_data=self.bus.read_byte_data(self.address, REGISTERS[self.bank][key]["reg"])
         new_data=(raw_data & ~REGISTERS[self.bank][key][reg_key]["bitmask"]) | (val << REGISTERS[self.bank][key][reg_key]["shift"])
-        self.bus.write_byte_data(self.addr, REGISTERS[self.bank][key]["reg"], new_data)
+        self.bus.write_byte_data(self.address, REGISTERS[self.bank][key]["reg"], new_data)
            
     def get_bank(self):
         return bool(self._decode("IOCON")["bank"])
@@ -406,7 +406,7 @@ class MCP23017:
         self._encode("IOCON", val, "bank")
 
     def get_interrupt_mirror(self):
-        return bool(self._decode("IOCON")["mirroe"])
+        return bool(self._decode("IOCON")["mirror"])
 
     def set_mirror(self, val=False):
         self._encode("IOCON", val, "mirror")
